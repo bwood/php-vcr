@@ -63,21 +63,24 @@ class Cassette
      */
     public function hasResponse(Request $request)
     {
-        return $this->playback($request) !== null;
+        return $this->playback($request, false) !== null;
     }
 
     /**
      * Returns a response for given request or null if not found.
      *
      * @param Request $request Request.
+     * @param bool $iterate Whether or not to increment the index for the request.
      *
      * @return Response|null Response for specified request.
      */
-    public function playback(Request $request)
+    public function playback(Request $request, $iterate = true)
     {
+        if ($iterate) {
         // Track how many times the same request occurs
-        $this->iterateIndex($request);
-
+            $this->iterateIndex($request);
+        }
+      
         foreach ($this->storage as $recording) {
             $storedRequest = Request::fromArray($recording['request']);
             if ($this->indexTable[$request->getHash()] === $recording['index']) {
