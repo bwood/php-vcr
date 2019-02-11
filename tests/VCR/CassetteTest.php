@@ -37,7 +37,14 @@ class CassetteTest extends \PHPUnit_Framework_TestCase
         $request = new Request('GET', 'https://example.com');
         $response1 = new Response(200, array(), 'sometest');
         $response2 = new Response(200, array(), 'sometest2');
+
+        // Act like \VCR\Videorecorder::handleRequest(): First attempt to
+        // playback the response which sets the index of the IndexTable, then
+        // record the response when no recording exists.
+        $this->cassette->playback($request);
         $this->cassette->record($request, $response1);
+        // Act like handleRequest() again for the second request.
+        $this->cassette->playback($request);
         $this->cassette->record($request, $response2);
 
         $this->resetIndex();
