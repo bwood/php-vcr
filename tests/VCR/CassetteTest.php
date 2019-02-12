@@ -57,6 +57,11 @@ class CassetteTest extends \PHPUnit_Framework_TestCase
     {
         $request = new Request('GET', 'https://example.com');
         $response = new Response(200, array(), 'sometest');
+
+        // Act like \VCR\Videorecorder::handleRequest(): First attempt to
+        // playback the response which sets the index of the IndexTable, then
+        // record the response when no recording exists.
+        $this->cassette->playback($request);
         $this->cassette->record($request, $response);
 
         $this->resetIndex();
@@ -75,10 +80,12 @@ class CassetteTest extends \PHPUnit_Framework_TestCase
     {
         $request = new Request('GET', 'https://example.com');
         $response = new Response(200, array(), 'sometest');
+
+        // Act like \VCR\Videorecorder::handleRequest(): First attempt to
+        // playback the response which sets the index of the IndexTable, then
+        // record the response when no recording exists.
+        $this->cassette->playback($request);
         $this->cassette->record($request, $response);
-
-        $this->resetIndex();
-
         $this->assertTrue($this->cassette->hasResponse($request), 'Expected true if request was found.');
     }
 
